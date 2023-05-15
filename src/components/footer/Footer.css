@@ -1,0 +1,29 @@
+footer {
+  background-color: var(--black);
+  height: 100vh;
+}
+
+footer .slide-to-nav {
+  margin: 30px 0 100px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+footer .slide-to-nav:hover svg {
+  fill: var(--primary);
+  transition: all 0.2s ease;
+}
+
+footer .slide-to-nav svg {
+  fill: var(--white);
+}
+
+@media (min-width: 1024px) {
+  footer .content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 60px 0 60px 375px;
+    color: var(--white);
+  }
+}
