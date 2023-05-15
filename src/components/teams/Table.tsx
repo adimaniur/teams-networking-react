@@ -1,5 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
+import React from "react";
 import "./Table.css";
+import { type } from "os";
+import { getTeamsRequest } from "./Middleware";
 
 type Team = {
   id: string;
@@ -16,7 +19,7 @@ type Props = {
 
 export function TeamsTable(props: Props) {
   return (
-    <form id="editForm" method="post" action="" className={props.loading ? "loading-mask" : ""}>
+    <form id="editForm" method="post" action="">
       <div className="aside">
         <div className="aside-content">
           <div className="aside-search">
@@ -51,7 +54,7 @@ export function TeamsTable(props: Props) {
           </div>
         </div>
       </div>
-      <table>
+      <table className={props.loading ? "loading-mask" : ""}>
         <thead>
           <tr>
             <th></th>
@@ -91,167 +94,31 @@ export function TeamsTable(props: Props) {
   );
 }
 
-export function TeamsTableWrapper() {
-  const teams = [
-    {
-      id: "86mq81630347385708",
-      promotion: "js",
-      members: "Matei Andreii",
-      name: "JS/HTML Quiz",
-      url: "https://github.com/nmatei/simple-quiz-app"
-    },
-    {
-      id: "w2aal1630347411902",
-      promotion: "react",
-      members: "FastTrackIT Student",
-      name: "Teams Networking Reacts",
-      url: "https://github.com/nmatei/teams-networking-react"
-    },
-    {
-      id: "fqt9ve1683212613979",
-      promotion: "CSS",
-      members: "Nicolae Matei",
-      name: "Web Presentation",
-      url: "https://github.com/nmatei/teams-networking-react"
-    },
-    {
-      id: "5ialq1683212617966",
-      promotion: "js",
-      members: "Andrei Matei",
-      name: "JS Quiz",
-      url: "https://github.com/nmatei/teams-networking"
-    },
-    {
-      id: "ymsek41683212623537",
-      promotion: "HTML",
-      members: "FastTrackIT Student",
-      name: "Teams Networking Reacts",
-      url: "https://github.com/nmatei/simple-quiz-app"
-    },
-    {
-      id: "eqbg61683212638273",
-      promotion: "react",
-      members: "Andrei Nicolae",
-      name: "Web Presentation",
-      url: "https://github.com/nmatei/web-intro-presentation"
-    },
-    {
-      id: "j2h02v1683212644982",
-      promotion: "JS",
-      members: "Matei",
-      name: "Teams Networking Reacts",
-      url: "https://github.com/nmatei/teams-networking"
-    },
-    {
-      id: "ec2c341683212650563",
-      promotion: "js",
-      members: "FastTrackIT Student",
-      name: "JS Quiz",
-      url: "https://github.com/nmatei/simple-quiz-app"
-    },
-    {
-      id: "n7qpnnh1683212664574",
-      promotion: "react",
-      members: "Matei Andrei",
-      name: "Web Presentation",
-      url: "https://github.com/nmatei/teams-networking-react"
-    },
-    {
-      id: "v2h1tr1683212669945",
-      promotion: "html",
-      members: "Andrei Matei",
-      name: "JS/HTML Quiz",
-      url: "https://github.com/nmatei/teams-networking-react"
-    },
-    {
-      id: "vqx5f41683212674485",
-      promotion: "html",
-      members: "Nicolae Matei",
-      name: "Web Presentation",
-      url: "https://github.com/nmatei/web-intro-presentation"
-    },
-    {
-      id: "z1tjhk1683547111230",
-      promotion: "js",
-      members: "FastTrackIT Student",
-      name: "JS/HTML/CSS Quiz",
-      url: "https://github.com/nmatei/simple-quiz-app"
-    },
-    {
-      id: "rp89fq1683547127012",
-      promotion: "react",
-      members: "Andrei Nicolae",
-      name: "Teams Networking",
-      url: "https://github.com/nmatei/teams-networking-react"
-    },
-    {
-      id: "filp3w1683547150715",
-      promotion: "js",
-      members: "Matei Andrei",
-      name: "JS Quiz",
-      url: "https://github.com/nmatei/simple-quiz-app"
-    },
-    {
-      id: "2sof11683547170772",
-      promotion: "html",
-      members: "Nicolae Matei",
-      name: "Web Presentation",
-      url: "https://github.com/nmatei/teams-networking-react"
-    },
-    {
-      id: "cwmlzg1683547198533",
-      promotion: "js",
-      members: "Matei",
-      name: "JS/HTML/CSS Quiz",
-      url: "https://github.com/nmatei/web-intro-presentation"
-    },
-    {
-      id: "nzaqjb1683547214072",
-      promotion: "js",
-      members: "FastTrackIT Student",
-      name: "Web Presentation",
-      url: "https://github.com/nmatei/simple-quiz-app"
-    },
-    {
-      id: "hps6mb1683547625777",
-      promotion: "html",
-      members: "Nicolae Matei",
-      name: "Web Presentation",
-      url: "https://github.com/nmatei/simple-quiz-app"
-    },
-    {
-      id: "5c12p61683547647961",
-      promotion: "js",
-      members: "Andrei Nicolae",
-      name: "JS/HTML/CSS Quiz",
-      url: "https://github.com/nmatei/simple-quiz-app"
-    },
-    {
-      id: "e1ix71683547662261",
-      promotion: "html",
-      members: "FastTrackIT Student",
-      name: "Teams Networking Reacts",
-      url: "https://github.com/nmatei/teams-networking"
-    },
-    {
-      id: "a62cdf1683547679807",
-      promotion: "react",
-      members: "Andrei Nicolae",
-      name: "Web Presentation",
-      url: "https://github.com/nmatei/web-intro-presentation"
-    },
-    {
-      id: "64tkqs1683547689901",
-      promotion: "JS",
-      members: "Matei",
-      name: "Teams Networking",
-      url: "https://github.com/nmatei/simple-quiz-app"
-    }
-  ];
+type WrapperProps = {};
+type State = {
+  loading: boolean;
+  teams: Team[];
+};
+export class TeamsTableWrapper extends React.Component<WrapperProps, State> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true,
+      teams: []
+    };
+  }
 
-  // return TeamsTable({
-  //   teams: teams
-  // });
+  async componentDidMount(): Promise<void> {
+    const teams = await getTeamsRequest();
+    setTimeout(() => {
+      this.setState({
+        loading: false,
+        teams: teams
+      });
+    });
+  }
 
-  return <TeamsTable teams={teams} loading={true} />;
+  render() {
+    return <TeamsTable teams={this.state.teams} loading={this.state.loading} />;
+  }
 }
