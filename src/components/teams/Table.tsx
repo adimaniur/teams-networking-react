@@ -1,7 +1,20 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import "./Table.css";
 
-export function TeamsTable(props) {
+type Team = {
+  id: string;
+  url: string;
+  promotion: string;
+  members: string;
+  name: string;
+};
+
+type Props = {
+  teams: Team[];
+  loading: boolean;
+};
+
+export function TeamsTable(props: Props) {
   return (
     <form id="editForm" method="post" action="" className={props.loading ? "loading-mask" : ""}>
       <div className="aside">
