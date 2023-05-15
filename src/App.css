@@ -103,7 +103,7 @@ h2 {
   transition: all 0.2s ease;
 }
 
-.main form button {
+.main form.find-me button {
   display: block;
   width: 100%;
   background-color: var(--black);
@@ -117,7 +117,7 @@ h2 {
   transition: all 0.2s ease;
 }
 
-.main form button:hover {
+.main form.find-me button:hover {
   background-color: var(--primary);
   transition: all 0.2s ease;
 }

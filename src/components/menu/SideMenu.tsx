@@ -2,7 +2,7 @@ export function SideMenu() {
   return (
     <div className="side">
       <h3>Find me</h3>
-      <form action="" method="get">
+      <form action="" method="get" className="find-me">
         <div className="row">
           <input type="text" name="" id="userName" className="form-field" required />
           <label htmlFor="userName" className="form-label">

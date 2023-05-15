@@ -1,8 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 import "./Table.css";
-import { type } from "os";
-import { getTeamsRequest } from "./Middleware";
+import { deleteTeamRequest, getTeamsRequest } from "./Middleware";
 
 type Team = {
   id: string;
@@ -17,7 +16,11 @@ type Props = {
   loading: boolean;
 };
 
-export function TeamsTable(props: Props) {
+type Actions = {
+  deleteTeam(id: string): void;
+};
+
+export function TeamsTable(props: Props & Actions) {
   return (
     <form id="editForm" method="post" action="">
       <div className="aside">
@@ -78,10 +81,13 @@ export function TeamsTable(props: Props) {
                   <a href={url} target="_blank" rel="noreferrer" className="btn-link btn-url">
                     🔗
                   </a>
-                  <a data-id={id} className="btn-link btn-edit">
-                    ✏️
-                  </a>
-                  <a data-id={id} className="btn-link btn-delete">
+                  <a className="btn-link btn-edit">✏️</a>
+                  <a
+                    className="btn-link btn-delete"
+                    onClick={() => {
+                      props.deleteTeam(id);
+                    }}
+                  >
                     ❌
                   </a>
                 </td>
@@ -109,6 +115,10 @@ export class TeamsTableWrapper extends React.Component<WrapperProps, State> {
   }
 
   async componentDidMount(): Promise<void> {
+    this.loadTeams();
+  }
+
+  async loadTeams() {
     const teams = await getTeamsRequest();
     setTimeout(() => {
       this.setState({
@@ -119,6 +129,15 @@ export class TeamsTableWrapper extends React.Component<WrapperProps, State> {
   }
 
   render() {
-    return <TeamsTable teams={this.state.teams} loading={this.state.loading} />;
+    return (
+      <TeamsTable
+        teams={this.state.teams}
+        loading={this.state.loading}
+        deleteTeam={async id => {
+          const status = await deleteTeamRequest(id);
+          console.log(status);
+        }}
+      />
+    );
   }
 }

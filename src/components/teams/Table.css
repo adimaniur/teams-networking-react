@@ -26,7 +26,6 @@ table thead tr,
 table tbody tr {
   border: 1px solid #f1f0ef;
   display: flex;
-  border-radius: 4px;
   margin-bottom: 5px;
 }
 
@@ -102,7 +101,7 @@ table td.team-promotion {
 .aside {
   margin-left: 30px;
   padding-left: 30px;
-  border-left: 1px solid #f1f0ef;
+  padding-top: 39px;
 }
 
 .aside-content {
@@ -260,6 +259,11 @@ table td.team-promotion {
 .btn-link:hover {
   border-left: 1px solid #f1f0ef;
   border-right: 1px solid #f1f0ef;
+}
+
+.btn-link:last-of-type:hover {
+  border-right: 1px solid white;
+  border-radius: 0 8px 8px 0;
 }
 
 .btn-link.btn-delete img,

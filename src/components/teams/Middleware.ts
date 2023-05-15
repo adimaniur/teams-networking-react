@@ -1,4 +1,3 @@
-
 export function getTeamsRequest() {
   return fetch("http://localhost:3000/teams-json", {
     method: "GET",
@@ -20,7 +19,7 @@ export function createTeamRequest(team) {
   }).then(r => r.json());
 }
 
-export function deleteTeamRequest(id, successDelete) {
+export function deleteTeamRequest(id, successDelete?) {
   return fetch("http://localhost:3000/teams-json/delete", {
     method: "DELETE",
     headers: {
