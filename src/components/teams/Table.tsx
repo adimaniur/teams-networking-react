@@ -21,6 +21,8 @@ type Actions = {
   deleteTeam(id: string): void;
   save(): void;
   inputChange(name: string, value: string): void;
+  startEdit(team: Team): void;
+  reset(): void;
 };
 
 export function TeamsTable(props: Props & Actions) {
@@ -32,6 +34,9 @@ export function TeamsTable(props: Props & Actions) {
       onSubmit={e => {
         e.preventDefault();
         props.save();
+      }}
+      onReset={() => {
+        props.reset();
       }}
     >
       <div className="aside">
@@ -115,7 +120,8 @@ export function TeamsTable(props: Props & Actions) {
           </tr>
         </thead>
         <tbody>
-          {props.teams.map(({ id, url, promotion, members, name }) => {
+          {props.teams.map(team => {
+            const { id, url, promotion, members, name } = team;
             return (
               <tr key={id}>
                 <td>
@@ -128,7 +134,14 @@ export function TeamsTable(props: Props & Actions) {
                   <a href={url} target="_blank" rel="noreferrer" className="btn-link btn-url">
                     🔗
                   </a>
-                  <a className="btn-link btn-edit">✏️</a>
+                  <a
+                    className="btn-link btn-edit"
+                    onClick={() => {
+                      props.startEdit(team);
+                    }}
+                  >
+                    ✏️
+                  </a>
                   <a
                     className="btn-link btn-delete"
                     onClick={() => {
@@ -153,13 +166,24 @@ type State = {
   teams: Team[];
   team: Team;
 };
+
+function getEmptyTeam(): Team {
+  return {
+    id: "",
+    name: "",
+    promotion: "",
+    url: "",
+    members: ""
+  };
+}
+
 export class TeamsTableWrapper extends React.Component<WrapperProps, State> {
   constructor(props) {
     super(props);
     this.state = {
       loading: true,
       teams: [],
-      team: { id: "", name: "", promotion: "", url: "", members: "" }
+      team: getEmptyTeam()
     };
   }
 
@@ -192,7 +216,20 @@ export class TeamsTableWrapper extends React.Component<WrapperProps, State> {
           const team = this.state.team;
           const status = await createTeamRequest(team);
           console.warn(status);
-          this.loadTeams();
+          await this.loadTeams();
+          this.setState({
+            team: getEmptyTeam()
+          });
+        }}
+        startEdit={team => {
+          this.setState({
+            team
+          });
+        }}
+        reset={() => {
+          this.setState({
+            team: getEmptyTeam()
+          });
         }}
         inputChange={(name: string, value: string) => {
           this.setState(state => ({
