@@ -23,7 +23,7 @@ footer .slide-to-nav svg {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 60px 0 60px 375px;
+    padding: 60px 0 60px 315px;
     color: var(--white);
   }
 }

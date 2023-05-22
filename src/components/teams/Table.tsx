@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 import "./Table.css";
-import { deleteTeamRequest, getTeamsRequest } from "./Middleware";
+import { createTeamRequest, deleteTeamRequest, getTeamsRequest } from "./Middleware";
 
 type Team = {
   id: string;
@@ -14,15 +14,26 @@ type Team = {
 type Props = {
   teams: Team[];
   loading: boolean;
+  team: Team;
 };
 
 type Actions = {
   deleteTeam(id: string): void;
+  save(): void;
+  inputChange(name: string, value: string): void;
 };
 
 export function TeamsTable(props: Props & Actions) {
   return (
-    <form id="editForm" method="post" action="">
+    <form
+      id="editForm"
+      method="post"
+      action=""
+      onSubmit={e => {
+        e.preventDefault();
+        props.save();
+      }}
+    >
       <div className="aside">
         <div className="aside-content">
           <div className="aside-search">
@@ -30,16 +41,52 @@ export function TeamsTable(props: Props & Actions) {
             <input type="search" name="search" id="search" />
           </div>
           <div className="aside-row">
-            <input type="text" name="promotion" id="promotion" placeholder="Add skill" required />
+            <input
+              type="text"
+              name="promotion"
+              placeholder="Add skill"
+              required
+              value={props.team.promotion}
+              onChange={e => {
+                props.inputChange("promotion", e.target.value);
+              }}
+            />
           </div>
           <div className="aside-row">
-            <input type="text" name="members" id="members" placeholder="Add member" required />
+            <input
+              type="text"
+              name="members"
+              placeholder="Add member"
+              required
+              value={props.team.members}
+              onChange={e => {
+                props.inputChange("members", e.target.value);
+              }}
+            />
           </div>
           <div className="aside-row">
-            <input type="text" name="project" id="project" placeholder="Add project name" required />
+            <input
+              type="text"
+              name="project"
+              placeholder="Add project name"
+              required
+              value={props.team.name}
+              onChange={e => {
+                props.inputChange("name", e.target.value);
+              }}
+            />
           </div>
           <div className="aside-row">
-            <input type="text" name="url" id="url" placeholder="Add URL" required />
+            <input
+              type="text"
+              name="url"
+              placeholder="Add URL"
+              required
+              value={props.team.url}
+              onChange={e => {
+                props.inputChange("url", e.target.value);
+              }}
+            />
           </div>
           <div className="aside-buttons">
             <button className="btn-save" type="submit">
@@ -104,13 +151,15 @@ type WrapperProps = {};
 type State = {
   loading: boolean;
   teams: Team[];
+  team: Team;
 };
 export class TeamsTableWrapper extends React.Component<WrapperProps, State> {
   constructor(props) {
     super(props);
     this.state = {
       loading: true,
-      teams: []
+      teams: [],
+      team: { id: "", name: "", promotion: "", url: "", members: "" }
     };
   }
 
@@ -133,9 +182,29 @@ export class TeamsTableWrapper extends React.Component<WrapperProps, State> {
       <TeamsTable
         teams={this.state.teams}
         loading={this.state.loading}
+        team={this.state.team}
         deleteTeam={async id => {
           const status = await deleteTeamRequest(id);
-          console.log(status);
+          console.warn(status);
+          this.loadTeams();
+        }}
+        save={async () => {
+          const team = this.state.team;
+          const status = await createTeamRequest(team);
+          console.warn(status);
+          this.loadTeams();
+        }}
+        inputChange={(name: string, value: string) => {
+          console.warn("%o changed to %o", name, value);
+          this.setState(state => {
+            const team = {
+              ...state.team
+            };
+            team[name] = value;
+            return {
+              team: team
+            };
+          });
         }}
       />
     );
