@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 import "./Table.css";
-import { createTeamRequest, deleteTeamRequest, getTeamsRequest } from "./Middleware";
+import { createTeamRequest, deleteTeamRequest, getTeamsRequest, updateTeamRequest } from "./Middleware";
 
 type Team = {
   id: string;
@@ -214,8 +214,14 @@ export class TeamsTableWrapper extends React.Component<WrapperProps, State> {
         }}
         save={async () => {
           const team = this.state.team;
-          const status = await createTeamRequest(team);
-          console.warn(status);
+          let status;
+
+          if (team.id) {
+            status = await updateTeamRequest(team);
+          } else {
+            status = await createTeamRequest(team);
+          }
+
           await this.loadTeams();
           this.setState({
             team: getEmptyTeam()
