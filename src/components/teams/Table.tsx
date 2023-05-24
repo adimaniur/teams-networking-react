@@ -2,14 +2,7 @@
 import React from "react";
 import "./Table.css";
 import { createTeamRequest, deleteTeamRequest, getTeamsRequest, updateTeamRequest } from "./Middleware";
-
-type Team = {
-  id: string;
-  url: string;
-  promotion: string;
-  members: string;
-  name: string;
-};
+import { Team } from "./Models";
 
 type Props = {
   teams: Team[];
@@ -185,6 +178,12 @@ export class TeamsTableWrapper extends React.Component<WrapperProps, State> {
       teams: [],
       team: getEmptyTeam()
     };
+
+    this.save = this.save.bind(this);
+    this.deleteTeam = this.deleteTeam.bind(this);
+    this.inputChange = this.inputChange.bind(this);
+    this.startEdit = this.startEdit.bind(this);
+    this.reset = this.reset.bind(this);
   }
 
   async componentDidMount(): Promise<void> {
@@ -193,11 +192,59 @@ export class TeamsTableWrapper extends React.Component<WrapperProps, State> {
 
   async loadTeams() {
     const teams = await getTeamsRequest();
-    setTimeout(() => {
-      this.setState({
-        loading: false,
-        teams: teams
-      });
+    this.setState({
+      loading: false,
+      teams: teams || []
+    });
+  }
+
+  private async deleteTeam(id: string) {
+    this.setState({ loading: true });
+    await deleteTeamRequest(id);
+    this.setState(state => ({
+      loading: false,
+      teams: state.teams.filter(team => team.id !== id)
+    }));
+  }
+
+  private inputChange(name: string, value: string) {
+    this.setState(state => ({
+      team: {
+        ...state.team,
+        [name]: value
+      }
+    }));
+  }
+
+  private async save() {
+    this.setState({
+      loading: true
+    });
+    const team = this.state.team;
+    let id, status;
+    if (team.id) {
+      status = await updateTeamRequest(team);
+    } else {
+      status = await createTeamRequest(team);
+      id = status.id;
+    }
+
+    this.setState(state => ({
+      loading: false,
+      teams: team.id ? state.teams.map(t => (t.id === team.id ? { ...team } : t)) : [...state.teams, { ...team, id }],
+      team: getEmptyTeam()
+    }));
+  }
+
+  private startEdit(team: Team) {
+    this.setState({
+      team
+    });
+  }
+
+  private reset() {
+    this.setState({
+      team: getEmptyTeam()
     });
   }
 
@@ -207,44 +254,11 @@ export class TeamsTableWrapper extends React.Component<WrapperProps, State> {
         teams={this.state.teams}
         loading={this.state.loading}
         team={this.state.team}
-        deleteTeam={async id => {
-          const status = await deleteTeamRequest(id);
-          console.warn(status);
-          this.loadTeams();
-        }}
-        save={async () => {
-          const team = this.state.team;
-          let status;
-
-          if (team.id) {
-            status = await updateTeamRequest(team);
-          } else {
-            status = await createTeamRequest(team);
-          }
-
-          await this.loadTeams();
-          this.setState({
-            team: getEmptyTeam()
-          });
-        }}
-        startEdit={team => {
-          this.setState({
-            team
-          });
-        }}
-        reset={() => {
-          this.setState({
-            team: getEmptyTeam()
-          });
-        }}
-        inputChange={(name: string, value: string) => {
-          this.setState(state => ({
-            team: {
-              ...state.team,
-              [name]: value
-            }
-          }));
-        }}
+        deleteTeam={this.deleteTeam}
+        save={this.save}
+        startEdit={this.startEdit}
+        reset={this.reset}
+        inputChange={this.inputChange}
       />
     );
   }

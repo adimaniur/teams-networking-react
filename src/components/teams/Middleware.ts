@@ -1,4 +1,6 @@
-export function getTeamsRequest() {
+import { Team } from "./Models";
+
+export function getTeamsRequest(): Promise<Team[]> {
   return fetch("http://localhost:3000/teams-json", {
     method: "GET",
     headers: {
@@ -9,7 +11,7 @@ export function getTeamsRequest() {
   });
 }
 
-export function createTeamRequest(team) {
+export function createTeamRequest(team: Team): Promise<{ success: boolean; id: string }> {
   return fetch("http://localhost:3000/teams-json/create", {
     method: "POST",
     headers: {
@@ -19,7 +21,10 @@ export function createTeamRequest(team) {
   }).then(r => r.json());
 }
 
-export function deleteTeamRequest(id, successDelete?) {
+export function deleteTeamRequest(
+  id: string,
+  successDelete?: (status: { success: boolean }) => void
+): Promise<{ success: boolean }> {
   return fetch("http://localhost:3000/teams-json/delete", {
     method: "DELETE",
     headers: {
@@ -31,13 +36,13 @@ export function deleteTeamRequest(id, successDelete?) {
     .then(status => {
       console.warn("status before delete:", status);
       if (typeof successDelete === "function") {
-        successDelete(status);
+        const r = successDelete(status);
       }
       return status;
     });
 }
 
-export function updateTeamRequest(team) {
+export function updateTeamRequest(team: Team) {
   return fetch("http://localhost:3000/teams-json/update", {
     method: "PUT",
     headers: {
